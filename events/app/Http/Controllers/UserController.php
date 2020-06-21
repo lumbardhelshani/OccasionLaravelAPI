@@ -78,12 +78,15 @@ class UserController extends Controller
     }
 
     public function usersStatus(Request $r){
-        $events = Event::find($r->event_id);
+       // dd('xxx');
+        $events = Events::find($r->event_id);
 
-        $users = User::select("users.*" , 'User_events.status')
-                ->join('User_events' , 'users.id' , 'User_events.event_id')
-                ->where('User_events.event_id' , $r->event_id);
-        $users['events'] = $events;
+
+
+        $users = User::select("users.name" , 'User_events.status')
+                ->join('User_events' , 'users.id' , 'User_events.user_id')
+                ->where('User_events.event_id' , $r->event_id)->get();
+        //$users->events = $events;
 
 
         return response()->json($users, 200);

@@ -27,6 +27,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('invite' , 'UserController@invite')->name('invite');
 
     Route::post('respondEvent' , 'UserController@respondEvent')->name('respondEvent');
+    
+    Route::post('usersStatus' , 'UserController@usersStatus')->name('usersStatus');
 
     Route::get('myEvents', 'UserController@myEvents')->name('myEvents');
     
