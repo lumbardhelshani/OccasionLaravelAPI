@@ -57,7 +57,7 @@ class UserController extends Controller
 
     public function eventsToGo(){
         if(Auth::check()){
-            $events = Events::select("events.*")
+            $events = Events::select("events.*" , "User_events.status")
             ->join('User_events' , 'events.id' , 'User_events.event_id')
             ->where('User_events.user_id' , Auth::user()->id)
             ->get();
@@ -68,13 +68,25 @@ class UserController extends Controller
                 'message' => 'Unauthorized!',
             ] , 403);
         }
-       
+
     }
 
     public function myEvents(){
         $events = Events::where('user_id' , Auth::user()->id)->get();
 
         return response()->json($events,200);
+    }
+
+    public function usersStatus(Request $r){
+        $events = Event::find($r->event_id);
+
+        $users = User::select("users.*" , 'User_events.status')
+                ->join('User_events' , 'users.id' , 'User_events.event_id')
+                ->where('User_events.event_id' , $r->event_id);
+        $users['events'] = $events;
+
+
+        return response()->json($users, 200);
     }
 
     public function respondEvent(Request $r){
@@ -88,7 +100,7 @@ class UserController extends Controller
 
         if($userEvent->save()){
             return response()->json([
-                'message' => 'Event successfully '.$r->status, 
+                'message' => 'Event successfully '.$r->status,
                 'status' => $r->status,
             ] , 200);
         }
@@ -107,10 +119,10 @@ class UserController extends Controller
 
     public function invite(Request $r){
         $userEvent = new UserEvents();
-        $invitedUser = User::select("users.*") -> where('email', $r->email)->get();
+        $invitedUser = User::where('email', $r->email)->first();
         $userEvent->event_id = $r->event_id;
-        $userID = User::where('email' , $r->email)->pluck('id');
-        $userID = 3;
+        $userID = $invitedUser->id;
+        // $userID = 3;
         $userEvent->user_id = $userID;
 
         if($userEvent->save()){
