@@ -107,9 +107,10 @@ class UserController extends Controller
 
     public function invite(Request $r){
         $userEvent = new UserEvents();
-
-        $userEvent->event_id = $r->event;
-        $userID = User::where('email' , $r->email)->pluck('id');
+        $invitedUser = User::select("users.*") -> where('email', $r->email)->get();
+        $userEvent->event_id = $r->event_id;
+        //$userID = User::where('email' , $r->email)->pluck('id');
+        $userID = $invitedUser->pluck('id');
         $userEvent->user_id = $userID;
 
         if($userEvent->save()){
