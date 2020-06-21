@@ -109,8 +109,8 @@ class UserController extends Controller
         $userEvent = new UserEvents();
         $invitedUser = User::select("users.*") -> where('email', $r->email)->get();
         $userEvent->event_id = $r->event_id;
-        //$userID = User::where('email' , $r->email)->pluck('id');
-        $userID = $invitedUser->pluck('id');
+        $userID = User::where('email' , $r->email)->pluck('id');
+        $userID = 3;
         $userEvent->user_id = $userID;
 
         if($userEvent->save()){
@@ -130,6 +130,17 @@ class UserController extends Controller
         return response()->json([
             'message' => 'You logged out!'
         ]);
+    }
+
+    public function getUserDetails(){
+        if(Auth::check()){
+            $user = User::select("users.*") -> where('id', Auth::user()->id)->get();
+            return response()->json($user,200);
+        }else{
+            return response()->json([
+                'message' => 'Unauthorized!',
+            ] , 403);
+        }
     }
 
     public function register(Request $request)

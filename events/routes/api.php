@@ -31,6 +31,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('myEvents', 'UserController@myEvents')->name('myEvents');
     
     Route::get('getEventStatus', 'UserController@getEventStatus')->name('getEventStatus');
+    
+    Route::get('getUserDetails', 'UserController@getUserDetails')->name('getUserDetails');
 
 });
 
